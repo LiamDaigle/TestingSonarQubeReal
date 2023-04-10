@@ -1,27 +1,21 @@
 name: Build
 
 on:
+  # Trigger analysis when pushing to your main branches, and when creating a pull request.
   push:
     branches:
       - main
 
-
 jobs:
-  build:
-    name: Build
+  sonarqube:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v1.2.0
-        env:
-          SONAR_TOKEN: sqp_8b3f506d1ab083a209b659314dde8077c4164c08
-          SONAR_HOST_URL: http://localhost:9000
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - uses: actions/checkout@v3
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
